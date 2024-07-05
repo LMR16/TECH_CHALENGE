@@ -1,0 +1,29 @@
+[2024-07-05T12:35:33.190+0000] {local_task_job_runner.py:120} INFO - ::group::Pre task execution logs
+[2024-07-05T12:35:33.213+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: bashscript.bash_task_execute_script manual__2024-07-05T12:35:31.786666+00:00 [queued]>
+[2024-07-05T12:35:33.222+0000] {taskinstance.py:2076} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: bashscript.bash_task_execute_script manual__2024-07-05T12:35:31.786666+00:00 [queued]>
+[2024-07-05T12:35:33.222+0000] {taskinstance.py:2306} INFO - Starting attempt 1 of 1
+[2024-07-05T12:35:33.238+0000] {taskinstance.py:2330} INFO - Executing <Task(BashOperator): bash_task_execute_script> on 2024-07-05 12:35:31.786666+00:00
+[2024-07-05T12:35:33.242+0000] {warnings.py:112} WARNING - /home/***/.local/lib/python3.12/site-packages/***/task/task_runner/standard_task_runner.py:61: DeprecationWarning: This process (pid=78) is multi-threaded, use of fork() may lead to deadlocks in the child.
+  pid = os.fork()
+
+[2024-07-05T12:35:33.243+0000] {standard_task_runner.py:63} INFO - Started process 79 to run task
+[2024-07-05T12:35:33.244+0000] {standard_task_runner.py:90} INFO - Running: ['***', 'tasks', 'run', 'bashscript', 'bash_task_execute_script', 'manual__2024-07-05T12:35:31.786666+00:00', '--job-id', '3', '--raw', '--subdir', 'DAGS_FOLDER/dag.py', '--cfg-path', '/tmp/tmpnkexxcpw']
+[2024-07-05T12:35:33.245+0000] {standard_task_runner.py:91} INFO - Job 3: Subtask bash_task_execute_script
+[2024-07-05T12:35:33.388+0000] {task_command.py:426} INFO - Running <TaskInstance: bashscript.bash_task_execute_script manual__2024-07-05T12:35:31.786666+00:00 [running]> on host 06eb87d01d76
+[2024-07-05T12:35:33.482+0000] {taskinstance.py:2648} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='bashscript' AIRFLOW_CTX_TASK_ID='bash_task_execute_script' AIRFLOW_CTX_EXECUTION_DATE='2024-07-05T12:35:31.786666+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-07-05T12:35:31.786666+00:00'
+[2024-07-05T12:35:33.483+0000] {taskinstance.py:430} INFO - ::endgroup::
+[2024-07-05T12:35:33.515+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2024-07-05T12:35:33.516+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', '#!/bin/sh\n\n# Run docker\n# docker-compose up -d\n\n# Navigate to the Meltano project directory\ncd meltano\n\n# Export the current date\nexport CURRENT_DATE=$(date +%Y-%m-%d)\necho "Current Date: $CURRENT_DATE"\n\n# Run Meltano ETL - CSV\nmeltano elt tap-csv target-csv > "../logs/meltano/csv/meltano_csv_$CURRENT_DATE.log" 2>&1\n\n# Check if the Meltano ETL job was successful\nif [ $? -eq 0 ]; then\n  echo "Meltano ETL - CSV - job completed successfully."\nelse\n  echo "Meltano ETL - CSV - job failed. Check the log file for details: ../logs/meltano_elt_$CURRENT_DATE.log"\nfi\n\n# Run meltano ETL - postgres\nmeltano elt tap-postgres target-jsonl > "../logs/meltano/postgres/meltano_postgres_$CURRENT_DATE.log" 2>&1\n\n# Check if the Meltano ETL job was successful\nif [ $? -eq 0 ]; then\n  echo "Meltano ETL - POSTGRES - job completed successfully."\nelse\n  echo "Meltano ETL - POSTGRES - job failed. Check the log file for details: ../logs/meltano_elt_$CURRENT_DATE.log"\nfi']
+[2024-07-05T12:35:33.525+0000] {subprocess.py:86} INFO - Output:
+[2024-07-05T12:35:33.527+0000] {subprocess.py:93} INFO - /usr/bin/bash: line 7: cd: meltano: No such file or directory
+[2024-07-05T12:35:33.532+0000] {subprocess.py:93} INFO - Current Date: 2024-07-05
+[2024-07-05T12:35:33.532+0000] {subprocess.py:93} INFO - /usr/bin/bash: line 14: ../logs/meltano/csv/meltano_csv_2024-07-05.log: No such file or directory
+[2024-07-05T12:35:33.533+0000] {subprocess.py:93} INFO - Meltano ETL - CSV - job failed. Check the log file for details: ../logs/meltano_elt_2024-07-05.log
+[2024-07-05T12:35:33.533+0000] {subprocess.py:93} INFO - /usr/bin/bash: line 24: ../logs/meltano/postgres/meltano_postgres_2024-07-05.log: No such file or directory
+[2024-07-05T12:35:33.533+0000] {subprocess.py:93} INFO - Meltano ETL - POSTGRES - job failed. Check the log file for details: ../logs/meltano_elt_2024-07-05.log
+[2024-07-05T12:35:33.534+0000] {subprocess.py:97} INFO - Command exited with return code 0
+[2024-07-05T12:35:33.534+0000] {taskinstance.py:441} INFO - ::group::Post task execution logs
+[2024-07-05T12:35:33.557+0000] {taskinstance.py:1206} INFO - Marking task as SUCCESS. dag_id=bashscript, task_id=bash_task_execute_script, run_id=manual__2024-07-05T12:35:31.786666+00:00, execution_date=20240705T123531, start_date=20240705T123533, end_date=20240705T123533
+[2024-07-05T12:35:33.577+0000] {local_task_job_runner.py:240} INFO - Task exited with return code 0
+[2024-07-05T12:35:33.593+0000] {taskinstance.py:3503} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2024-07-05T12:35:33.598+0000] {local_task_job_runner.py:222} INFO - ::endgroup::

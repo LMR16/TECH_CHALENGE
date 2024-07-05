@@ -1,0 +1,71 @@
+version: 1
+default_environment: dev
+project_id: e850c942-91cf-48fd-91ec-fcb29e3d0b32
+environments:
+- name: dev
+  env:
+    CURRENT_DATE: ${CURRENT_DATE}
+- name: staging
+- name: prod
+plugins:
+  extractors:
+  - name: tap-postgres
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/tap-postgres.git
+    config:
+      database: northwind
+      user: northwind_user
+      password: thewindisblowing
+      host: localhost
+      port: 5433
+      filter_schemas: [public]
+      default_replication_method: LOG_BASED
+
+  - name: tap-csv
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/tap-csv.git
+    config:
+      files:
+      - path: ../data/order_details.csv
+        entity: order_details
+        keys: [order_id]
+
+  loaders:
+  - name: target-csv
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/target-csv.git
+    config:
+      destination_path: ../data/csv/$CURRENT_DATE
+
+  - name: target-jsonl
+    variant: andyh1203
+    pip_url: target-jsonl
+    config:
+      destination_path: ../data/postgres/$CURRENT_DATE
+
+
+  files:
+  - name: files-airflow
+    variant: meltano
+    pip_url: git+https://github.com/meltano/files-airflow.git
+  utilities:
+  - name: airflow
+    variant: apache
+    pip_url: git+https://github.com/meltano/airflow-ext.git@main apache-airflow==2.8.1
+      --constraint 
+      https://raw.githubusercontent.com/apache/airflow/constraints-2.8.1/constraints-no-providers-${MELTANO__PYTHON_VERSION}.txt
+mappings:
+  tap-postgres-to-json:
+  - extractor: tap-postgres
+    loader: target-jsonl
+  tap-csv-to-csv:
+  - extractor: tap-csv
+    loader: target-csv
+jobs:
+- name: tap-csv-to-target-csv
+  tasks:
+  - tap-csv target-csv
+schedules:
+- name: daily-csv-load
+  interval: '@daily'
+  job: tap-csv-to-target-csv
